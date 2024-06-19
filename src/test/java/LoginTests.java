@@ -36,7 +36,7 @@ public class LoginTests extends BaseTest {
     @Test
     public void incorrectEmail() throws InterruptedException {
 
-
+        String expectedUrl = "https://demo.koel.dev/";
         //navigateToPage();
 
         provideEmail("google@koel.dev");
@@ -48,13 +48,13 @@ public class LoginTests extends BaseTest {
         clickLogin();
         Thread.sleep(1000);
 
-        Assert.assertEquals(driver.getCurrentUrl(), url);
+        Assert.assertEquals(driver.getCurrentUrl(), expectedUrl);
 
     }
 
     @Test
     public void incorrectPassword() throws InterruptedException {
-
+        String expectedUrl = "https://demo.koel.dev/";
 
         //navigateToPage();
 
@@ -70,7 +70,7 @@ public class LoginTests extends BaseTest {
         clickLogin();
         Thread.sleep(1000);
 
-        Assert.assertEquals(driver.getCurrentUrl(), url);
+        Assert.assertEquals(driver.getCurrentUrl(), expectedUrl);
 
 
     }
@@ -78,6 +78,8 @@ public class LoginTests extends BaseTest {
 
     @Test(enabled = true, description = "Not Yet due to issue")
     public void logOutTest() throws InterruptedException {
+
+        String expectedUrl = "https://demo.koel.dev/";
 
         //navigateToPage();
 
@@ -93,7 +95,26 @@ public class LoginTests extends BaseTest {
         logOut();
         Thread.sleep(1000);
 
-        Assert.assertEquals(driver.getCurrentUrl(),url);
+        Assert.assertEquals(driver.getCurrentUrl(),expectedUrl);
+
+    }
+
+    @Test(dataProvider = "NegativeLoginTestData", dataProviderClass = TestDataSets.class)
+    public void negativeLoginTest(String email, String password) throws InterruptedException {
+
+        String expectedUrl = "https://demo.koel.dev/";
+        //navigateToPage();
+
+        provideEmail(email);
+        Thread.sleep(1000);
+
+        providePassword(password);
+        Thread.sleep(1000);
+
+        clickLogin();
+        Thread.sleep(1000);
+
+        Assert.assertEquals(driver.getCurrentUrl(), expectedUrl);
 
     }
 

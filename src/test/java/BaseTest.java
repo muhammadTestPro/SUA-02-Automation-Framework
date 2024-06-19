@@ -4,9 +4,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.*;
 
 import java.time.Duration;
 
@@ -14,7 +12,7 @@ public class BaseTest {
 
     public WebDriver driver;
 
-    public String url = "https://demo.koel.dev/";
+    //public String url = "https://demo.koel.dev/";
 
 
 
@@ -24,7 +22,8 @@ public class BaseTest {
     }
 
     @BeforeMethod
-    public void launchBrowser(){
+    @Parameters({"BaseURL"})
+    public void launchBrowser(String baseUrl){
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
         options.addArguments("--disable-notifications");
@@ -33,7 +32,7 @@ public class BaseTest {
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         driver.manage().window().maximize();
 
-        navigateToPage();
+        navigateToPage(baseUrl);
 
     }
     @AfterMethod
@@ -42,8 +41,13 @@ public class BaseTest {
     }
 
 
-    public void navigateToPage(){
+    /*public void navigateToPage(){
 
+        driver.get(url);
+
+    }*/
+
+    public void navigateToPage(String url){
         driver.get(url);
 
     }
