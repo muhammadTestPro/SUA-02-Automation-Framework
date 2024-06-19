@@ -1,5 +1,6 @@
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -16,20 +17,13 @@ public class LoginTests extends BaseTest {
     @Test
     public void logicSuccess() throws InterruptedException {
 
-        //navigateToPage();
-
         provideEmail("demo@koel.dev");
-        Thread.sleep(1000);
-
         providePassword("demo");
-        Thread.sleep(1000);
-
-
         clickLogin();
-        Thread.sleep(1000);
-
-        WebElement profileAvatar = driver.findElement(By.cssSelector("a.view-profile img"));
-
+        //WebElement profileAvatar = driver.findElement(By.cssSelector("a.view-profile img"));
+        //WebElement profileAvatar = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("a.view-profile img")));
+        WebElement profileAvatar = fluentWait.until
+                (ExpectedConditions.visibilityOfElementLocated(By.cssSelector("a.view-profile img")));
         Assert.assertTrue(profileAvatar.isDisplayed());
     }
 
