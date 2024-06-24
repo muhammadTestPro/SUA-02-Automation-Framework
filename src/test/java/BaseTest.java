@@ -4,6 +4,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -18,6 +19,8 @@ public class BaseTest {
     public WebDriverWait wait;
 
     public FluentWait<WebDriver> fluentWait;
+
+    Actions actions;
 
     //public String url = "https://demo.koel.dev/";
 
@@ -42,7 +45,7 @@ public class BaseTest {
         fluentWait = new FluentWait<WebDriver>(driver)
                 .withTimeout(Duration.ofSeconds(5))
                 .pollingEvery(Duration.ofMillis(150));
-
+        actions = new Actions(driver);
         navigateToPage(baseUrl);
     }
     @AfterMethod
@@ -96,5 +99,11 @@ public class BaseTest {
         WebElement logoutButton = driver.findElement(By.cssSelector("button[data-title='Log out']"));
         logoutButton.click();
 
+    }
+
+    public boolean isSongPlaying(){
+        WebElement soundDiskSpinning = wait.until(ExpectedConditions.visibilityOfElementLocated
+                (By.xpath("//div[@class='song-info playing']")));
+        return soundDiskSpinning.isDisplayed();
     }
 }
