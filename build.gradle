@@ -23,5 +23,6 @@ test {
         //suites "src/test/resources/Homework15.xml"
         //suites "src/test/resources/Regression.xml"
         suites "src/test/resources/TestNG.xml"
+        systemProperty "browser", System.getProperty("browser")
     }
 }
