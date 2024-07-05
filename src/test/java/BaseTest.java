@@ -17,7 +17,9 @@ import org.testng.annotations.*;
 
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.time.Duration;
+import java.util.HashMap;
 
 public class BaseTest {
 
@@ -31,6 +33,12 @@ public class BaseTest {
 
     //public String url = "https://demo.koel.dev/";
 
+    private static final ThreadLocal<WebDriver> threadDriver = new ThreadLocal<>();
+
+    public static WebDriver getDriver(){
+        return threadDriver.get();
+    }
+
 
 
     @BeforeSuite
@@ -40,13 +48,13 @@ public class BaseTest {
         //WebDriverManager.firefoxdriver().setup();
     }
 
-    @BeforeMethod
+    /*@BeforeMethod
     @Parameters({"BaseURL"})
     public void launchBrowser(String baseUrl) throws MalformedURLException {
-        /*ChromeOptions options = new ChromeOptions();
+        *//*ChromeOptions options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
         options.addArguments("--disable-notifications");
-        driver = new ChromeDriver(options);*/
+        driver = new ChromeDriver(options);*//*
         //driver = new FirefoxDriver();
         driver = pickBrowser(System.getProperty("browser"));
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
@@ -58,10 +66,33 @@ public class BaseTest {
                 .pollingEvery(Duration.ofMillis(150));
         actions = new Actions(driver);
         navigateToPage(baseUrl);
+    }*/
+
+    @BeforeMethod
+    @Parameters({"BaseURL"})
+    public void launchBrowser(String baseUrl) throws MalformedURLException {
+       threadDriver.set(pickBrowser(System.getProperty("browser")));
+        //driver = pickBrowser(System.getProperty("browser"));
+        getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        getDriver().manage().window().maximize();
+        wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
+        //fluent Wait
+        fluentWait = new FluentWait<WebDriver>(getDriver())
+                .withTimeout(Duration.ofSeconds(5))
+                .pollingEvery(Duration.ofMillis(150));
+        actions = new Actions(getDriver());
+        navigateToPage(baseUrl);
     }
-    @AfterMethod
+
+    /*@AfterMethod
     public void closeBrowser(){
         driver.quit();
+    }*/
+
+    @AfterMethod
+    public void tearDown(){
+        threadDriver.get().close();
+        threadDriver.remove();
     }
 
 
@@ -71,8 +102,12 @@ public class BaseTest {
 
     }*/
 
-    public void navigateToPage(String url){
+    /*public void navigateToPage(String url){
         driver.get(url);
+
+    }*/
+    public void navigateToPage(String url){
+        getDriver().get(url);
 
     }
 
@@ -140,12 +175,32 @@ public class BaseTest {
             case "grid-chrome":
                 caps.setCapability("browserName", "chrome");
                 return driver = new RemoteWebDriver(URI.create(gridURL).toURL(),caps);
+            case "cloud" : return lambdaTest();
             default:
                 WebDriverManager.chromedriver().setup();
                 ChromeOptions chromeOptions = new ChromeOptions();
                 chromeOptions.addArguments("--remote-allow-origins=*");
                 return driver = new ChromeDriver(chromeOptions);
         }
+    }
+
+    public static WebDriver lambdaTest() throws MalformedURLException {
+        String hubURL = "https://hub.lambdatest.com/wd/hub";
+
+        ChromeOptions browserOptions = new ChromeOptions();
+        browserOptions.setPlatformName("Windows 10");
+        browserOptions.setBrowserVersion("126");
+        HashMap<String, Object> ltOptions = new HashMap<String, Object>();
+        ltOptions.put("username", "muhammadtestpro");
+        ltOptions.put("accessKey", "SE8iAUT7KcFw8hrr9shssoC2PQCg4CTki1fpmP3OX6VDNr5ksJ");
+        ltOptions.put("build", "TESTCloud");
+        ltOptions.put("project", "SUA_TEST_CLOUD");
+        ltOptions.put("w3c", true);
+        ltOptions.put("plugin", "java-testNG");
+        browserOptions.setCapability("LT:Options", ltOptions);
+
+        return new RemoteWebDriver(new URL(hubURL), browserOptions);
+
     }
 
 }

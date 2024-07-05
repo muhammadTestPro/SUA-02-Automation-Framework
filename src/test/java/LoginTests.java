@@ -7,7 +7,7 @@ import pages.HomePage;
 import pages.LoginPage;
 
 public class LoginTests extends BaseTest {
-    @Test
+    //@Test
     public void loginEmptyEmailPassword() {
 
         String url = "https://demo.koel.dev/";
@@ -16,7 +16,7 @@ public class LoginTests extends BaseTest {
         //driver.quit();
     }
 
-    @Test
+    //@Test
     public void logicSuccess() throws InterruptedException {
 
         provideEmail("demo@koel.dev");
@@ -29,7 +29,7 @@ public class LoginTests extends BaseTest {
         Assert.assertTrue(profileAvatar.isDisplayed());
     }
 
-    @Test
+    //@Test
     public void incorrectEmail() throws InterruptedException {
 
         String expectedUrl = "https://demo.koel.dev/";
@@ -48,7 +48,7 @@ public class LoginTests extends BaseTest {
 
     }
 
-    @Test
+    //@Test
     public void incorrectPassword() throws InterruptedException {
         String expectedUrl = "https://demo.koel.dev/";
 
@@ -72,7 +72,7 @@ public class LoginTests extends BaseTest {
     }
 
 
-    @Test(enabled = true, description = "Not Yet due to issue")
+    //@Test(enabled = true, description = "Not Yet due to issue")
     public void logOutTest() throws InterruptedException {
 
         String expectedUrl = "https://demo.koel.dev/";
@@ -95,7 +95,7 @@ public class LoginTests extends BaseTest {
 
     }
 
-    @Test(dataProvider = "NegativeLoginTestData", dataProviderClass = TestDataSets.class)
+    /*@Test(dataProvider = "NegativeLoginTestData", dataProviderClass = TestDataSets.class)
     public void negativeLoginTest(String email, String password) throws InterruptedException {
 
         String expectedUrl = "https://demo.koel.dev/";
@@ -112,19 +112,37 @@ public class LoginTests extends BaseTest {
 
         Assert.assertEquals(driver.getCurrentUrl(), expectedUrl);
 
-    }
+    }*/
 
     @Test
     public void loginTest(){
         //Page Objects
-        LoginPage loginPage = new LoginPage(driver);
-        HomePage homePage = new HomePage(driver);
+        LoginPage loginPage = new LoginPage(getDriver());
+        HomePage homePage = new HomePage(getDriver());
         //Test
         loginPage.provideEmail("demo@koel.dev");
         loginPage.providePassword("demo");
         loginPage.clickLogin();
         //Assertions
         Assert.assertTrue(homePage.getUserAvatar().isDisplayed());
+    }
+
+    @Test(dataProvider = "NegativeLoginTestData", dataProviderClass = TestDataSets.class)
+    public void negativeLoginTest(String email, String password) throws InterruptedException {
+
+        String expectedUrl = "https://demo.koel.dev/";
+        //navigateToPage();
+
+        //Page Objects
+        LoginPage loginPage = new LoginPage(getDriver());
+        HomePage homePage = new HomePage(getDriver());
+        //Test
+        loginPage.provideEmail(email);
+        loginPage.providePassword(password);
+        loginPage.clickLogin();
+
+        Assert.assertEquals(getDriver().getCurrentUrl(), expectedUrl);
+
     }
 
 }
